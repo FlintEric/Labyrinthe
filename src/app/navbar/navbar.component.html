@@ -1,0 +1,16 @@
+<mat-toolbar color="primary">  
+  <span>Labyrinthe</span>
+  <a mat-icon-button  aria-label="Afficher la scene en 2D" routerLink="/2D" routerLinkActive="active">2D</a>
+  <a mat-icon-button  aria-label="Afficher la scene en 3D" routerLink="/3D" routerLinkActive="active">3D</a>
+  <div>
+    <input type="number" placeholder="Colonnes" [(ngModel)]="Columns" (document:keydown.arrowup)="prevent($event)" (document:keydown.arrowdown)="prevent($event)"/>
+    <input type="number" placeholder="Lignes" [(ngModel)]="Lignes" (document:keydown.arrowup)="prevent($event)" (document:keydown.arrowdown)="prevent($event)"/>
+    <button type="button" class="btn" (click)="reset()">Nouveau</button>
+  </div>
+  <div *ngIf="showButtons">
+    <button type="button" (click)="left()" (document:keydown.arrowleft)="left()">←</button>
+    <button type="button" (click)="up()" (document:keydown.arrowup)="up()">↑</button>
+    <button type="button" (click)="right()" (document:keydown.arrowright)="right()">→</button>
+    <button type="button" (click)="down()" (document:keydown.arrowdown)="down()">↓</button>
+  </div>
+</mat-toolbar>
