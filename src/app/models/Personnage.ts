@@ -58,9 +58,11 @@ export class Personnage {
 
 export class PersoHero extends Personnage {
     private _score:number;
-
-    constructor(cell:Cell){
+    
+public get Word(){ return this.word;}
+    constructor(cell:Cell, private word?:string){
         super("hero", cell);
+        console.log(`Hero to ${cell.Id}`);
         this._score = 0;
     }
 
@@ -83,4 +85,6 @@ export class PersoHero extends Personnage {
     public AddScore(value:number){
         this._score += value;
     }
+
+
 }

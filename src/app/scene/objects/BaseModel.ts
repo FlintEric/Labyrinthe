@@ -122,6 +122,42 @@ export class Color {
     }
 }
 
+export class FontRessource {
+    private static fonts: any = {};
+    private preloaded = false;
+
+    private static fontLoader = new THREE.FontLoader();
+    private _font?:THREE.Font;
+
+    constructor(private _path: string, private _name:string){
+        FontRessource.fonts[_name] = this;
+        FontRessource.fontLoader.load(_path, response => {
+            this._font = response;
+            this.preloaded=true;
+        });
+    }
+    public get isLoaded(): boolean { return this.preloaded; }
+    public get Font():THREE.Font|undefined { return this._font; }
+
+    private static _allLoaded: boolean = false;
+    public static get AllLoaded(): boolean {
+        if (FontRessource._allLoaded) return true;
+        else {
+            let isloaded = true;
+            for (let img of Object.keys(FontRessource.LoadedFonts)) {
+                isloaded = isloaded && FontRessource.LoadedFonts[img].isLoaded;
+            }
+            FontRessource._allLoaded = isloaded;
+            return FontRessource._allLoaded;
+        }
+    }
+
+
+    public static get LoadedFonts() {
+        return FontRessource.fonts;
+    }
+}
+
 export class ImageRessource {
     private static images: any = {};
     private preloaded = false;
@@ -195,6 +231,8 @@ export class ImageRessource {
         return ImageRessource.images;
     }
 }
+
+
 
 export abstract class BaseModel {
     private static idCount:number=0;

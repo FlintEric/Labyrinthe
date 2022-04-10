@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { WebGLService } from "./web-gl.service";
 import { WebDrawService } from "./web-draw.service";
-import { BaseModel, Point2D, ImageRessource, Point } from "../objects/BaseModel";
+import { BaseModel, Point2D, ImageRessource, FontRessource, Point } from "../objects/BaseModel";
 import { VMaze } from '../objects/Decors/VMaze';
 import { MazeService } from "../../navbar/maze.service";
 import { Hero } from '../objects/Personnages/Hero';
@@ -41,7 +41,6 @@ export class SceneService {
   private onceCalled: boolean = false;
   private scoreSummiter: any;
 
-  
   constructor() {
     if (!SceneService._instance) { SceneService._instance = this; }
     this.id = Math.floor(Math.random() * 1000000);
@@ -72,6 +71,14 @@ export class SceneService {
 
 
     }
+    if (!FontRessource.LoadedFonts || Object.keys(FontRessource.LoadedFonts)) {
+      let fonts = [{ path: "assets/fonts/helvetiker_regular.typeface.json", name: "helvetiker_regular" }, { path: "assets/fonts/helvetiker_bold.typeface.json", name: "helvetiker_bold" },
+      { path: "assets/fonts/droid_sans_regular.typeface.json", name: "droid_sans_regular" }, { path: "assets/fonts/droid_sans_bold.typeface.json", name: "droid_sans_bold" },
+      { path: "assets/fonts/gentilis_regular.typeface.json", name: "gentilis_regular" }, { path: "assets/fonts/gentilis_bold.typeface.json", name: "gentilis_bold" }];
+      for (let f of fonts) {
+        new FontRessource(f.path, f.name);
+      }
+    }
 
 
     this.onceCalled = true;
@@ -81,12 +88,12 @@ export class SceneService {
     const that = SceneService.Instance;
     if (!that.onceCalled) that.callOnce();
     console.log("InitializeContext");
-    
-      that.DrawSrv = drawService;
-      that.MazeSrv = mazeService;
-    
-      await that.initialize();
-    
+
+    that.DrawSrv = drawService;
+    that.MazeSrv = mazeService;
+
+    await that.initialize();
+
   }
 
   async initialize() {
@@ -94,7 +101,7 @@ export class SceneService {
     if (!that.DrawSrv) { console.error("Initialize Context first"); return; }
     let mod: "2D" | "3D" = (that.DrawSrv instanceof WebDrawService) ? "2D" : "3D";
     console.log(`Initializing  ${mod}`);
-    
+
     if (!that.currentMaze) {
       console.log("Pas de labyrinthe => Création");
       that.ComputeMaze();
@@ -106,11 +113,11 @@ export class SceneService {
     }
 
     that.DrawSrv.clear();
-    
+
     for (let model of that.Models) {
       switch (mod) {
         case "2D": model.Init2D(that.DrawSrv.Context as CanvasRenderingContext2D); break;
-        case "3D": {          
+        case "3D": {
           await model.Init3D(that.DrawSrv as WebGLService);
           requestAnimationFrame(that.Draw);
         } break;
@@ -161,21 +168,23 @@ export class SceneService {
           that.AddModel(that.options[that.options.length - 1]);
         }
 
-        if( this.scoreSummiter){
+        
+        if (this.scoreSummiter) {
           this.scoreSummiter.unsubscribe();
         }
         this.scoreSummiter = ModelEvents.ScoreEmitter.subscribe((evt: AddScoreEvent) => {
-
+console.dir(evt);
           let that = SceneService.Instance;
           if (info === that._instanceComptation) {
-            let score = evt.ScoreAdd.Score;
-
-
+            let score:number = 0;
+           
+            score = (evt.Model ).Score;
+           
             // suppression de l'option consommée
             if (that.options) {
               let index = -1;
               for (let i = 0; i < that.options.length; i++) {
-                if (that.options[i].Model.Equals(evt.ScoreAdd)) {
+                if (that.options[i].Model.Equals(evt.Model)) {
                   index = i;
                   break;
                 }
@@ -189,11 +198,13 @@ export class SceneService {
                 }
               }
             }
-            that.MazeSrv?.RemoveOption(evt.ScoreAdd);
+            that.MazeSrv?.RemoveOption(evt.Model);
             console.log("Options:", that.MazeSrv?.Options);
             console.log("Models:", that._models);
           }
         });
+        
+       
         console.log("Options:", that.MazeSrv.Options);
         console.log("Models:", that._models);
       }
@@ -209,8 +220,8 @@ export class SceneService {
   }
 
   RemoveModel(model: BaseModel): void {
-    console.log(`Suppression de ${ model.id}`);
-    
+    console.log(`Suppression de ${model.id}`);
+
     let that = SceneService.Instance;
     let startLength = SceneService.Instance.Models.length;
     let toDeleteIndex = -1;
@@ -221,23 +232,23 @@ export class SceneService {
       }
     }
     that._models.splice(toDeleteIndex, 1);
-    if( that._models.length === startLength ) throw new Error(`Erreur lors de la suppression de ${model.id} (length identiques)`);
-    if( SceneService.Instance.Models.length  === startLength ) throw new Error(`Erreur lors de la suppression de ${model.id} (length identiques 2)`);
+    if (that._models.length === startLength) throw new Error(`Erreur lors de la suppression de ${model.id} (length identiques)`);
+    if (SceneService.Instance.Models.length === startLength) throw new Error(`Erreur lors de la suppression de ${model.id} (length identiques 2)`);
 
     let mod: "2D" | "3D" = (that.DrawSrv instanceof WebDrawService) ? "2D" : "3D";
-    if( mod === "3D" && model.mesh){
+    if (mod === "3D" && model.mesh) {
       (that.DrawSrv as WebGLService).Scene.remove(model.mesh);
     }
     // On s'assure que l'element est bien supprimé
-    for(let m of  SceneService.Instance.Models){
-      if( m.id === model.id) throw new Error("Erreur lors de la suppression de " + model.id + ": [" + SceneService.Instance.Models.map(m => m.id).join(', ') + "]");
+    for (let m of SceneService.Instance.Models) {
+      if (m.id === model.id) throw new Error("Erreur lors de la suppression de " + model.id + ": [" + SceneService.Instance.Models.map(m => m.id).join(', ') + "]");
     }
     model.dispose();
   }
 
   ClearMaze(): void {
     let that = SceneService.Instance;
-    for(let m of that._models) m.dispose();
+    for (let m of that._models) m.dispose();
     that._models = [];
     that.options = [];
     that.currentHero = undefined;
@@ -256,7 +267,7 @@ export class SceneService {
         if (that._drawService) {
           //console.log(`Drawing Scene: ${that.Models.length} Models`)
           that._drawService.Draw(that.Models);
-         
+
         }
         else throw new Error("initialiseContext First");
       }

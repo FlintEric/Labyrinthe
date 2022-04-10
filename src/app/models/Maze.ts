@@ -155,6 +155,7 @@ export class Maze {
 
 export class Cell {
     constructor(public x: number, public y: number, public visited: boolean = false, public isStart = false, public isEnd = false) { }
+    public get Id(){ return `[${this.x},${this.y}]`;}
     private _left?: Cell; private _right?: Cell; private _top?: Cell; private _bottom?: Cell;
     public get Left(): Cell | undefined { return this._left; };
     public set Left(value: Cell | undefined) { this._left = value; if (value && !value.Right) value.Right = this; }
@@ -212,8 +213,13 @@ export class Cell {
 
     public Equals(obj: Cell|undefined): boolean {
         if( obj === undefined ) return false;
-        return this.x == obj.x && this.y === obj.y;
+        return this.Id === obj.Id;//this.x == obj.x && this.y === obj.y;
     }
     public equals(obj: Cell): boolean { return this.Equals(obj); }
+
+    public toString():string {
+        let str = `Cell: [${this.x}, ${this.y}, v:${this.Visited} start:${this.isStart}, end:${this.isEnd}]`;
+        return str;
+    }
 }
 

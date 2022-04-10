@@ -5,6 +5,7 @@
   <div>
     <input type="number" placeholder="Colonnes" [(ngModel)]="Columns" (document:keydown.arrowup)="prevent($event)" (document:keydown.arrowdown)="prevent($event)"/>
     <input type="number" placeholder="Lignes" [(ngModel)]="Lignes" (document:keydown.arrowup)="prevent($event)" (document:keydown.arrowdown)="prevent($event)"/>
+    <label><input type="checkbox" placeholder="Avec mot" [(ngModel)]="WithWord">Avec des mots</label>
     <button type="button" class="btn" (click)="reset()">Nouveau</button>
   </div>
   <div *ngIf="showButtons">

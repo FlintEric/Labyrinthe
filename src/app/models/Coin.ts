@@ -1,26 +1,15 @@
-import { Cell } from ".";
-import { AddScoreEvent, ModelEvents, PersonnageMovedEvent} from './ModelEvents';
+import { Cell } from "./Maze";
+import { ScoreObject } from "./ScoreObject";
 
-export class Coin {
-
-    public get Cell(){ return this.cell;}   
-    public get Score(){ return this.score; }
-    private emitter:any;
-    constructor(private cell:Cell, private score:number = 1){
-        let that = this;
-        this.emitter = ModelEvents.MovementEmitter.subscribe(function(evt:PersonnageMovedEvent){
-            if( evt.Personnage.Cell.Equals(cell)){
-                ModelEvents.ScoreEmitter.emit(new AddScoreEvent(evt.Personnage, that))
-            }
-        });
+export class Coin extends ScoreObject{
+   
+    constructor( cell:Cell, score:number = 1){
+        super(cell, score);
+        console.log(`Adding Coin to ${cell.Id}`);
     }
 
-    public Equals(other:Coin):boolean{
-        if( this.cell.Equals(other.cell)){
-            if( this.Score === other.Score) return true;
-        }
+    public doEqual(other:ScoreObject):boolean{
+        if( other && other instanceof Coin && this.Score === (other as Coin).Score) return true;
         return false;
     }
-
-    public equals(other:Coin):boolean{ return this.Equals(other);}
 }

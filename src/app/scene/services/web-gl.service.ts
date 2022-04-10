@@ -86,7 +86,8 @@ export class WebGLService implements Clearable {
       
     
     //
-    window.addEventListener('resize', this.onWindowResize);
+    let that = this;
+    window.addEventListener('resize', function(){that.onWindowResize()});
   }
 
   initialiseWebGLCanvas() {
@@ -113,6 +114,24 @@ export class WebGLService implements Clearable {
 
     this.scene.add(light);
 
+    // Ajout des axes pour aider a debugger
+    const Xmaterial = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+    let pointsX = [new THREE.Vector3(200,0,0), new THREE.Vector3(-200,0,0)];
+    let geomX = new THREE.BufferGeometry().setFromPoints(pointsX);
+    let lineX = new THREE.Line(geomX, Xmaterial);
+    this.scene.add(lineX);
+    
+    const Ymaterial = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
+    let pointsY = [new THREE.Vector3(0,200,0), new THREE.Vector3(0,-200,0)];
+    let geomY = new THREE.BufferGeometry().setFromPoints(pointsY);
+    let lineY = new THREE.Line(geomY, Ymaterial);
+    this.scene.add(lineY);
+
+    const Zmaterial = new THREE.LineBasicMaterial( { color: 0xff0000 } );
+    let pointsZ = [new THREE.Vector3(0,0,200), new THREE.Vector3(0,0,-200)];
+    let geomZ = new THREE.BufferGeometry().setFromPoints(pointsZ);
+    let lineZ = new THREE.Line(geomZ, Zmaterial);
+    this.scene.add(lineZ);
   }
 
   setInitSize(){

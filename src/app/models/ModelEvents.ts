@@ -1,6 +1,6 @@
 import { EventEmitter } from '@angular/core';
 import { PersoHero, Personnage } from './Personnage';
-import { Coin } from "./Coin";
+import { ScoreObject } from './ScoreObject';
 
 export class PersonnageEvent extends Event {
     public get Personnage(){ return this.perso;}
@@ -27,12 +27,14 @@ export class HeroLooseEvent extends PersonnageEvent {
     }
 }
 
+
+
 export class AddScoreEvent extends PersonnageEvent {
-    constructor(perso:Personnage, private score:Coin){
+    constructor(perso:Personnage, private model:ScoreObject){
         super(perso, "hero_scores");
     }
 
-    public get ScoreAdd() { return this.score; }
+    public get Model():ScoreObject { return this.model; }
 }
 
 

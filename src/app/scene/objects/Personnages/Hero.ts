@@ -6,6 +6,7 @@ import { BaseDeplacable } from './BaseDeplacable';
 import { Wall } from "../Decors/Wall";
 import * as THREE from "three";
 import { Subscription } from 'rxjs';
+import { MeshFactory } from '../MeshFactory';
 
 export class Hero extends BaseDeplacable {
 
@@ -17,6 +18,11 @@ export class Hero extends BaseDeplacable {
 
 
     }
+
+    public get Maze():VMaze{ return this.maze;}
+
+    public get Texture(){ return this.texture;}
+    
 
     public get Model() { return this._model; }
     public set Model(value: Personnage) { this._model = value; }
@@ -42,24 +48,9 @@ export class Hero extends BaseDeplacable {
         // Ajout d'une forme pour représenter le hero (le temps qu'on passe a la 1ere personne)
 
         //let geometry = new THREE.BoxGeometry(this.Bounds.Width - 10, this.Bounds.Height - 10, this.maze.TileDepth - 20, 1, 1, 1);
-        let geometry = new THREE.ConeGeometry(this.Bounds.Width - 10, this.maze.TileHeight-10, 32);
-        let material: THREE.Material;
-        if (this.texture && this.texture instanceof ImageRessource) {
-            console.log(this.texture.Image);
-            material = new THREE.MeshLambertMaterial({ map: new THREE.Texture(this.texture.Image), transparent: false, opacity: 1 });
-        }
-        else if (this.texture && this.texture instanceof Color) {
-            material = new THREE.MeshLambertMaterial({ color: this.texture.toHex() });
-        }
-        else
-            material = new THREE.MeshLambertMaterial({ color: 0x0f2f0f });
-
-        let cube = new THREE.Mesh(geometry, material);
-        cube.position.x = this.Bounds.Left;
-        cube.position.y = this.Bounds.Top;
-        cube.position.z = 3;
-        this.mesh = cube;
-        gl.Scene.add(cube);
+        
+        this.mesh = MeshFactory.CreateHero(this);
+        gl.Scene.add(this.mesh);
 
 
         this.move3D(gl);
@@ -213,7 +204,7 @@ export class Hero extends BaseDeplacable {
 
             ctx.drawImage(this.texture.Image, this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
         }
-        let scoreTxt = `Score: ${(this.Model as PersoHero).Score}`;
+        let scoreTxt = `Score: ${(this.Model as PersoHero).Score}`;        
         ctx.fillStyle = "#FFFFFF";
         let txtInfo = ctx.measureText(scoreTxt);
         ctx.fillText(scoreTxt, 10, 10);

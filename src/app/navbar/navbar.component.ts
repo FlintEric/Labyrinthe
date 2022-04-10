@@ -28,6 +28,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log(params);
       return "0";
     }));
+    
   }
   ngOnDestroy(): void {
     if( this.winSubscribe){this.winSubscribe.unsubscribe(); }
@@ -36,7 +37,21 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     if( this.winSubscribe){this.winSubscribe.unsubscribe(); }
     this.winSubscribe = ModelEvents.WinEmitter.subscribe((heroEvt:HeroWinEvent) =>{
-      alert("Bravo !! Vous avez " + (heroEvt.Personnage as PersoHero).Score + " points");
+      let txt:string="";
+      if( (heroEvt.Personnage as PersoHero).Word ){
+        let word:string|undefined = (heroEvt.Personnage as PersoHero).Word;
+        if( word !== undefined){
+          if(word.length === (heroEvt.Personnage as PersoHero).Score )
+            txt = `Bravo !! Vous êtes sorti du labyrinthe !
+Vous avez trouvé toutes les lettres du mot "${word}"`;
+          else txt = `Bravo !! Vous êtes sorti du labyrinthe !
+Il vous manque ${( word.length)- (heroEvt.Personnage as PersoHero).Score} lettres pour avoir le mot "${word}"`;
+}
+
+      }else{
+        txt = "Bravo !! Vous êtes sorti du labyrinthe !\nVous avez " + (heroEvt.Personnage as PersoHero).Score + " points";
+      }
+      alert(txt);
       this.reset();
     });
   }
@@ -53,9 +68,11 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _lines: number = MazeService.DEFAULT_LINES;
   private _columns: number = MazeService.DEFAULT_COLUMNS;
+  private _withWord: boolean = true;
+  private _wordList:string[] = ["Ananas","Spiderman","Ironman","Coucou","Pokemon","Maman","Papa","Allo","Youpi","Maison","Ecole"];
 
   reset() {
-    this.mazeService.GenerateMaze(this.Columns, this.Lignes).then(() => { this.scene.initializeAndDraw(); });
+    this.mazeService.GenerateMaze(this.Columns, this.Lignes, this.WithWord ? this._wordList[Math.floor(Math.random()*1000) % this._wordList.length]: undefined).then(() => { this.scene.initializeAndDraw(); });
   }
 
   @Input() public get Columns() { return this._columns; }
@@ -99,4 +116,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
         event.preventDefault();
       }
   }
+
+  @Input() public get WithWord():boolean{ return this._withWord;}
+  public set WithWord(value:boolean){ this._withWord = value;}
+
+  @Input() public get WordList():string[] { return this._wordList; }
+  public set WordList(value:string[]){ this._wordList = value;}
 }
