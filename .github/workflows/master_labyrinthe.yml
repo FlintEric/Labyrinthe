@@ -21,17 +21,20 @@ jobs:
         with:
           node-version: '14.x'
 
+      - name: Install Angular CLI
+        run:
+          npm install -g @angular/cli
+
       - name: npm install, build, and test
         run: |
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm run build          
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: .
+          path: dist/
 
   deploy:
     runs-on: ubuntu-latest
@@ -53,4 +56,4 @@ jobs:
           app-name: 'Labyrinthe'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7013EE0856414FB2859DE21A83DAAA01 }}
-          package: .
+          package: dist/
