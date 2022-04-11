@@ -58,13 +58,13 @@ export class SceneService {
       new ImageRessource(path, "spiderman");
       this.heroNames.push("spiderman");
 
-      path = "assets/images/venom.png";
+      /*path = "assets/images/venom.png";
       new ImageRessource(path, "venom");
       this.monsters.push("venom");
 
       path = "assets/images/araignee_squelette.png";
       new ImageRessource(path, "araignee_squelette");
-      this.monsters.push("araignee_squelette");
+      this.monsters.push("araignee_squelette");*/
 
       new ImageRessource("assets/images/textures/sols/chemins.png", "floor", true);
       new ImageRessource("assets/images/textures/murs/stone-wall-texture-tileable.jpg", "wall", true);
