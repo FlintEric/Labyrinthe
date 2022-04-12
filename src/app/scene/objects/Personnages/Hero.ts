@@ -242,11 +242,12 @@ export class Hero extends BaseDeplacable {
                 }
                 else{
                     // top (0°)
-                    roatation = -Math.PI/2;
+                    roatation = 0;
                 }
             }
             ctx.save();
             ctx.translate(this.Bounds.CenterX, this.Bounds.CenterY);
+            console.log(roatation);
             ctx.rotate(roatation);
             ctx.translate(-this.Bounds.CenterX, -this.Bounds.CenterY);
             ctx.drawImage(this.texture.Image,this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
