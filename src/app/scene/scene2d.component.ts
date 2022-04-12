@@ -29,4 +29,5 @@ export class Scene2dComponent implements OnInit, AfterViewInit {
 
   }
 
+
 }

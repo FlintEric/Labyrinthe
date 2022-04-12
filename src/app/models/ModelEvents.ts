@@ -10,7 +10,8 @@ export class PersonnageEvent extends Event {
 }
 
 export class PersonnageMovedEvent extends PersonnageEvent {
-    constructor(perso:Personnage){
+    public get Direction(){ return this.direction; }
+    constructor(perso:Personnage, private direction:string){
         super(perso,"personnage_moved");
         perso.Cell.Visited = true;
     }

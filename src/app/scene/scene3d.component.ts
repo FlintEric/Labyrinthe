@@ -29,4 +29,5 @@ export class Scene3dComponent implements OnInit, AfterViewInit {
   ngOnInit() {
   }
 
+
 }

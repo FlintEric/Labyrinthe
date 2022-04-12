@@ -48,6 +48,10 @@ export class Rectangle {
     public get Right() { return this.pt.X + this.Width; }
     public get Bottom() { return this.pt.Y + this.Height; }
 
+    public get CenterX() { return this.pt.X + (this.Width / 2); }
+    public get CenterY() { return this.pt.Y + (this.Height / 2); }
+    public get CenterZ() { return this.pt.Z + (this.Depth / 2); }
+    
     public Equals(rect: Rectangle): boolean {
         return this.Location.Equals(rect.Location) &&
             this.Width === rect.Width &&

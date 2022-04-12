@@ -7,6 +7,7 @@ import { Wall } from "../Decors/Wall";
 import * as THREE from "three";
 import { Subscription } from 'rxjs';
 import { MeshFactory } from '../MeshFactory';
+import { HttpClientXsrfModule } from '@angular/common/http';
 
 export class Hero extends BaseDeplacable {
 
@@ -161,17 +162,39 @@ export class Hero extends BaseDeplacable {
         let that = this;
         ModelEvents.MovementEmitter.subscribe(function (_event: PersonnageMovedEvent) {
             if (_event.Personnage.Equals(that.Model))
-                that.move2D();
+                that.move2D(_event.Direction);
                 _event.preventDefault();
         });
         console.log("Hero", this.texture.toString());
     }
 
-    public move2D() {
-        let targetBounds = this.maze.GetTile(this._model.Cell);
-        if (targetBounds) {
-            this.Bounds = new Rectangle2D(new Point2D(targetBounds.Bounds.X + 3, targetBounds.Bounds.Y + 3), targetBounds.Bounds.Width - 6, targetBounds.Bounds.Height - 6);
+    public move2D(direction?:string) {
+        let targetB = this.maze.GetTile(this._model.Cell);        
+        if (targetB) {
+            this.Bounds = new Rectangle2D(new Point2D(targetB.Bounds.X + 3, targetB.Bounds.Y + 3), targetB.Bounds.Width - 6, targetB.Bounds.Height - 6);
             this.Model.NeedToMove = false;
+
+            if( direction ){
+                console.log("Move " + direction);
+                switch (direction) {
+                    case "top":
+                    case "up":
+                        this.Orientation = new THREE.Vector3(0, 1, 0);
+                        
+                        break;
+                    case "right":
+                        this.Orientation = new THREE.Vector3(1, 0, 0);
+                        break;
+                    case "bottom":
+                        case "down":
+                        this.Orientation = new THREE.Vector3(0, -1, 0);
+                        break;
+                    case "left":
+                        this.Orientation = new THREE.Vector3(-1, 0, 0);
+                        break;
+                }
+                console.log(`(${this.Orientation.x},${this.Orientation.y})`)
+            }
         }
 
     }
@@ -201,8 +224,34 @@ export class Hero extends BaseDeplacable {
                 setTimeout(function () { that.Draw2D(ctx); }, 10);
                 return;
             }
-
-            ctx.drawImage(this.texture.Image, this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
+            let roatation = 0;
+            if( this.Orientation ){                
+                // ON va au centre de la zone d'affichage
+                console.log(`Working in [${this.Bounds}] Transating to [${this.Bounds.CenterX}, ${this.Bounds.CenterY}] (${this.Orientation.x},${this.Orientation.y})`);
+                //ctx.translate(this.Bounds.X + (this.Bounds.Width/2), this.Bounds.Y + (this.Bounds.Height/2));
+                // On fait tourner l'image en fonction de la direction               
+                if( this.Orientation.y < 0){ // down (180°)
+                    roatation = Math.PI;
+                }
+                else if( this.Orientation.x > 0){
+                    // right (90°)
+                    roatation = Math.PI/2;
+                }else if( this.Orientation.x < 0){
+                    // left (270°)
+                    roatation = -Math.PI/2;
+                }
+                else{
+                    // top (0°)
+                    roatation = -Math.PI/2;
+                }
+            }
+            ctx.save();
+            ctx.translate(this.Bounds.CenterX, this.Bounds.CenterY);
+            ctx.rotate(roatation);
+            ctx.translate(-this.Bounds.CenterX, -this.Bounds.CenterY);
+            ctx.drawImage(this.texture.Image,this.Bounds.X, this.Bounds.Y, this.Bounds.Width, this.Bounds.Height);
+            ctx.restore();
+            
         }
         let scoreTxt = `Score: ${(this.Model as PersoHero).Score}`;        
         ctx.fillStyle = "#FFFFFF";
