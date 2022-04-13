@@ -18,8 +18,11 @@ L'url de l'application est la suivante: [Lanyrinthe](https://calm-beach-0e176f81
 
 * 5 - Lance la génération d'un nouveau labyrinthe
 
+Pour des raisons de performances, il faut éviter de dépasser la taille de 100x100 (surtout pour la vue 3D qui n'est pas encore finalisée/optimisée).
 
+Les déplacements s'effectuent avec les touches flechées ou les boutons de directions qui se trouvent a coté du bouton "nouveau".
 
+*******
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.1.
 
