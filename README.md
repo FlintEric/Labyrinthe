@@ -2,9 +2,24 @@
 
 Jeu de labyrinthe 
 
-# DEMO
+## Présentation
 
-[Lanyrinthe](https://calm-beach-0e176f810.1.azurestaticapps.net)
+L'url de l'application est la suivante: [Lanyrinthe](https://calm-beach-0e176f810.1.azurestaticapps.net)
+
+2 Vues possibles: 2D / 3D
+
+![image](/doc/images/Bandeau.png)
+
+* 1 - Affiche la vue 2D
+* 2 - Affiche la vue 3D
+
+* 3 - Définit le nombre de colonnes du labyrinthe
+* 4 - Définit le nombre de lignes du labyrinthe
+
+* 5 - Lance la génération d'un nouveau labyrinthe
+
+
+
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.1.
 
