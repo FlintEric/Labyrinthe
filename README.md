@@ -1,6 +1,10 @@
 # Labyrinthe
 
-Jeu de labyrinthe
+Jeu de labyrinthe 
+
+# DEMO
+
+[Lanyrinthe](https://calm-beach-0e176f810.1.azurestaticapps.net)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.1.
 
