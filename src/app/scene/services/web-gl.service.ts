@@ -288,7 +288,7 @@ export class MainView extends View{
   updateCamera(objet: BaseModel): void;
   updateCamera(mouseX: number, mouseY: number): void;
   updateCamera(mouseX?: number, mouseY?: number, objet?: BaseModel): void;
-  updateCamera(mouseX?: any, mouseY?: any, objet?: any) {
+  updateCamera(mouseX?: any, mouseY?: any, objet?: any): void {
     throw new Error('Method not implemented.');
   }
   
@@ -298,7 +298,7 @@ export class MiniMapView extends View {
   updateCamera(objet: BaseModel): void;
   updateCamera(mouseX: number, mouseY: number): void;
   updateCamera(mouseX?: number, mouseY?: number, objet?: BaseModel): void;
-  updateCamera(mouseX?: any, mouseY?: any, objet?: any) {
+  updateCamera(mouseX?: any, mouseY?: any, objet?: any): void {
     throw new Error('Method not implemented.');
   }
   
